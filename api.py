@@ -119,3 +119,8 @@ def get_meteorogical_data_route():
 def get_GFS_model_route():
     GFS_dicts = [GFS.to_dict() for GFS in GFS_model]
     return jsonify(GFS_dicts)
+
+
+
+if __name__ == "__main__":
+    app.run()

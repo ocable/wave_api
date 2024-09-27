@@ -24,7 +24,7 @@ from tools import UTC_datetime
 
 
 app = Flask(__name__)
-app.config['JSON_SORT_KEYS'] = False
+# app.config['JSON_SORT_KEYS'] = False
 CORS(app)
 
 

@@ -2,9 +2,9 @@ import time
 from flask import Flask, jsonify
 from flask_cors import CORS
 import requests
-import matplotlib.pyplot as plt
 from rich import print
 import numpy as np
+import datetime
 
 
 from peak_detect import peakdet
@@ -18,6 +18,7 @@ from weather_data import get_weather_data as fetch_weather_data
 from wind_data import main as fetch_wind_data
 from meterological_data import get_meteorological_data as fetch_meteorological_data
 from GFS_model import parse_GFS_model as fetch_GFS_model
+from tools import UTC_datetime
 
 
 
@@ -30,6 +31,9 @@ CORS(app)
 # NBDC Buoy ID
 portlandBuoyID = 44007
 
+# Date and cycle
+date, cycle = UTC_datetime()
+
 # NDBC Raw Spectral Data
 raw_spectralData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.data_spec')
 
@@ -40,7 +44,7 @@ raw_directionalData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{p
 raw_meteorogicalData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.txt')
 
 # GFS Model Data
-bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20240917/12/wave/station/bulls.t12z/gfswave.{portlandBuoyID}.bull')
+bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
 
 
 

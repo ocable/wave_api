@@ -43,11 +43,11 @@ class GFS_forecast_hour:
         }
 
 
-
+entries = []
 
 def parse_GFS_model(bull_file):
+    
     if bull_file.status_code == 200:
-        entries = []
         raw_data = bull_file.text.split('\n')
 
         for i in range(7, len(raw_data) - 9):
@@ -73,6 +73,7 @@ def parse_GFS_model(bull_file):
                 entry = GFS_forecast_hour(day, hour, significant_wave_height, num_swell_components, comp1_height, comp1_period, comp1_dir, comp2_height, comp2_period, comp2_dir, comp3_height, comp3_period, comp3_dir)
 
                 entries.append(entry)
+
 
 
             elif len(first_line) == 7:

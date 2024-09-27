@@ -1,4 +1,6 @@
 import math
+import datetime
+
 
 
 
@@ -20,3 +22,21 @@ def wave_energy(period, height):
 
 
 
+def UTC_datetime():
+    cycle = 00
+    current_date_utc = datetime.datetime.now(datetime.timezone.utc)
+    # Format the date in YYYYMMDD format
+
+    formatted_date_utc = current_date_utc.strftime("%Y%m%d")
+    time = int(current_date_utc.strftime("%H%M%S"))
+
+    if time < 93000:
+        cycle = "00"
+    elif time > 93000 and time < 153100:
+        cycle = "06"
+    elif time > 153100 and time < 213600:
+        cycle = "12"
+    else:
+        cycle = "18"
+
+    return formatted_date_utc, cycle

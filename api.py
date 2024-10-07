@@ -46,6 +46,7 @@ raw_meteorogicalData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{
 # GFS Model Data
 bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
 
+raw_weatherData = requests.get(f'https://api.weather.gov/gridpoints/GYX/76,54/forecast')
 
 
 # Spectral data
@@ -69,7 +70,7 @@ wind_data = fetch_wind_data()
 
 
 # Weather live/forecast
-weather_data = fetch_weather_data()
+weather_data = fetch_weather_data(raw_weatherData)
 
 # Meteorological buoy data
 wind_direction, wind_speed, gust, significant_wave_height, dominant_wave_period, average_wave_period, dominant_wave_direction, sea_level_pressure, air_temperature, sea_surface_temperature, dewpoint, visibility = fetch_meteorological_data(raw_meteorogicalData)

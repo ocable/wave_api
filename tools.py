@@ -33,10 +33,10 @@ def UTC_datetime():
     if time < 93000:
         cycle = "00"
     elif time > 93000 and time < 153100:
-        cycle = "06"
+        cycle = "00"
     elif time > 153100 and time < 213600:
-        cycle = "12"
+        cycle = "06"
     else:
-        cycle = "18"
+        cycle = "12"
 
     return formatted_date_utc, cycle

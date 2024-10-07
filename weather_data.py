@@ -41,11 +41,9 @@ class weather_data(BaseModel):
     
 
 
-def get_weather_data():
-    url = f'https://api.weather.gov/gridpoints/GYX/76,54/forecast'
-    resp = requests.get(url)
-    resp.raise_for_status()
-    weather_data_list = resp.json()["properties"]["periods"]
+def get_weather_data(raw_weatherData):
+    raw_weatherData.raise_for_status()
+    weather_data_list = raw_weatherData.json()["properties"]["periods"]
     data = [weather_data(**item) for item in weather_data_list]
     return data
     

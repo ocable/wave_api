@@ -34,20 +34,9 @@ portlandBuoyID = 44007
 # Date and cycle
 date, cycle = UTC_datetime()
 
-# NDBC Raw Spectral Data
-raw_spectralData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.data_spec')
 
-# NDBC Raw Directional Data
-raw_directionalData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.swdir')
 
-# NDBC Raw Meteorological Buoy Data
-raw_meteorogicalData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.txt')
 
-# GFS Model Data
-bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
-
-# Weather.gov Data
-raw_weatherData = requests.get(f'https://api.weather.gov/gridpoints/GYX/76,54/forecast')
 
 
 
@@ -61,12 +50,20 @@ def get_current_time():
 
 @app.route('/spectraldata')
 def get_spectral_data_route():
+    # NDBC Raw Spectral Data
+    raw_spectralData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.data_spec')
     # Spectral data
     seperation, densities, frequencies, periods = fetch_spectral_data(raw_spectralData)
     return {'seperation': seperation, 'densities': densities, 'frequencies': frequencies, 'periods': periods}
 
 @app.route('/significant')
 def get_significant_wave_data():
+    # NDBC Raw Spectral Data
+    raw_spectralData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.data_spec')
+
+    # NDBC Raw Directional Data
+    raw_directionalData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.swdir')
+
     # Spectral data
     seperation, densities, frequencies, periods = fetch_spectral_data(raw_spectralData)
 
@@ -87,6 +84,12 @@ def get_significant_wave_data():
 
 @app.route('/swellcomponents')
 def get_swell_components():
+    # NDBC Raw Spectral Data
+    raw_spectralData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.data_spec')
+
+    # NDBC Raw Directional Data
+    raw_directionalData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.swdir')
+
     # Spectral data
     seperation, densities, frequencies, periods = fetch_spectral_data(raw_spectralData)
 
@@ -112,6 +115,9 @@ def get_wind_data_route():
 
 @app.route('/weather')
 def get_weather_data_route():
+    # Weather.gov Data
+    raw_weatherData = requests.get(f'https://api.weather.gov/gridpoints/GYX/76,54/forecast')
+
     # Weather live/forecast
     weather_data = fetch_weather_data(raw_weatherData)
 
@@ -121,6 +127,9 @@ def get_weather_data_route():
 
 @app.route('/meteorological')
 def get_meteorogical_data_route():
+    # NDBC Raw Meteorological Buoy Data
+    raw_meteorogicalData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.txt')
+
     # Meteorological buoy data
     wind_direction, wind_speed, gust, significant_wave_height, dominant_wave_period, average_wave_period, dominant_wave_direction, sea_level_pressure, air_temperature, sea_surface_temperature, dewpoint, visibility = fetch_meteorological_data(raw_meteorogicalData)
 
@@ -128,6 +137,9 @@ def get_meteorogical_data_route():
 
 @app.route('/GFS')
 def get_GFS_model_route():
+    # GFS Model Data
+    bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
+
     # GFS Model
     GFS_model = fetch_GFS_model(bull_file)
 

@@ -31,14 +31,6 @@ CORS(app)
 # NBDC Buoy ID
 portlandBuoyID = 44007
 
-# Date and cycle
-date, cycle = UTC_datetime()
-
-
-
-
-
-
 
 
 
@@ -138,6 +130,8 @@ def get_meteorogical_data_route():
 
 @app.route('/GFS')
 def get_GFS_model_route():
+    # Date and cycle
+    date, cycle = UTC_datetime()
     # GFS Model Data
     bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
 

@@ -9,6 +9,8 @@ import datetime
 
 from peak_detect import peakdet
 from tools import wave_energy
+from tools import UTC_datetime
+
 
 from spectral_data import get_spectral_data as fetch_spectral_data
 from spectral_data import swell_components as fetch_swell_components
@@ -18,7 +20,6 @@ from weather_data import get_weather_data as fetch_weather_data
 from wind_data import main as fetch_wind_data
 from meterological_data import get_meteorological_data as fetch_meteorological_data
 from GFS_model import parse_GFS_model as fetch_GFS_model
-from tools import UTC_datetime
 
 
 
@@ -33,15 +34,13 @@ portlandBuoyID = 44007
 
 
 
-
-
 # API ENDPOINTS -------->
 
-@app.route('/time')
+@app.route('/time', methods=["GET"])
 def get_current_time():
     return {'time': time.time()}
 
-@app.route('/spectraldata')
+@app.route('/spectraldata', methods=["GET"])
 def get_spectral_data_route():
     # NDBC Raw Spectral Data
     raw_spectralData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.data_spec')
@@ -49,7 +48,7 @@ def get_spectral_data_route():
     seperation, densities, frequencies, periods = fetch_spectral_data(raw_spectralData)
     return {'seperation': seperation, 'densities': densities, 'frequencies': frequencies, 'periods': periods}
 
-@app.route('/significant')
+@app.route('/significant', methods=["GET"])
 def get_significant_wave_data():
     # NDBC Raw Spectral Data
     raw_spectralData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.data_spec')
@@ -75,7 +74,7 @@ def get_significant_wave_data():
 
     return {'sig_wave_height': sig_wave_height, 'period': sig_period, 'direction': primaryDirection, 'density': density, 'energy': sig_wave_energy}
 
-@app.route('/swellcomponents')
+@app.route('/swellcomponents', methods=["GET"])
 def get_swell_components():
     # NDBC Raw Spectral Data
     raw_spectralData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.data_spec')
@@ -98,7 +97,7 @@ def get_swell_components():
     components_dicts = [component.to_dict() for component in components]
     return jsonify(components_dicts)
 
-@app.route('/wind')
+@app.route('/wind', methods=["GET"])
 def get_wind_data_route():
     # Wind data
     wind_data = fetch_wind_data()
@@ -106,7 +105,7 @@ def get_wind_data_route():
     wind_dicts = [wind.to_dict() for wind in wind_data]
     return jsonify(wind_dicts)
 
-@app.route('/weather')
+@app.route('/weather', methods=["GET"])
 def get_weather_data_route():
     # Weather.gov Data
     raw_weatherData = requests.get(f'https://api.weather.gov/gridpoints/GYX/76,54/forecast')
@@ -118,7 +117,7 @@ def get_weather_data_route():
     weather_dicts = [weather.to_dict() for weather in weather_data]
     return jsonify(weather_dicts)
 
-@app.route('/meteorological')
+@app.route('/meteorological', methods=["GET"])
 def get_meteorogical_data_route():
     # NDBC Raw Meteorological Buoy Data
     raw_meteorogicalData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.txt')
@@ -128,19 +127,18 @@ def get_meteorogical_data_route():
 
     return {'wind_direction': wind_direction, 'wind_speed': wind_speed, 'gust': gust, 'significant_wave_height': significant_wave_height, 'dominant_wave_period': dominant_wave_period, 'average_wave_period': average_wave_period, 'dominant_wave_direction': dominant_wave_direction, 'sea_level_pressure': sea_level_pressure, 'air_temperature': air_temperature, 'sea_surface_temperature': sea_surface_temperature, 'dewpoint': dewpoint, 'visibility': visibility}
 
-@app.route('/GFS')
+@app.route('/GFS', methods=["GET"])
 def get_GFS_model_route():
     # Date and cycle
     date, cycle = UTC_datetime()
+    print(cycle)
     # GFS Model Data
     bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
-
     # GFS Model
     GFS_model = fetch_GFS_model(bull_file)
 
     GFS_dicts = [GFS.to_dict() for GFS in GFS_model]
     return jsonify(GFS_dicts)
-
 
 
 if __name__ == "__main__":

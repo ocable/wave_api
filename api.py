@@ -171,6 +171,8 @@ def get_GFS_model_route():
     bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
     # GFS Model
     GFS_model = fetch_GFS_model(bull_file)
+
+    # GFS Model data to dictionary
     GFS_dicts = [GFS.to_dict() for GFS in GFS_model]
 
     response = make_response(jsonify(GFS_dicts))

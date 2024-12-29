@@ -1,5 +1,6 @@
 import math
 import datetime
+from pytz import timezone
 
 
 
@@ -24,9 +25,8 @@ def wave_energy(period, height):
 
 def UTC_datetime():
     cycle = 00
-    current_date_utc = datetime.datetime.now(datetime.timezone.utc)
+    current_date_utc = datetime.datetime.now(timezone('US/Eastern'))
     # Format the date in YYYYMMDD format
-
     formatted_date_utc = current_date_utc.strftime("%Y%m%d")
     time = int(current_date_utc.strftime("%H%M%S"))
 
@@ -41,4 +41,6 @@ def UTC_datetime():
 
     return formatted_date_utc, cycle
 
-print(UTC_datetime())
+print(UTC_datetime()) 
+
+

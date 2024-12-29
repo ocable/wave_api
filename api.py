@@ -143,6 +143,7 @@ def get_GFS_model_route():
     # GFS Model
     GFS_model = fetch_GFS_model(bull_file)
 
+    # GFS Model data to dictionary
     GFS_dicts = [GFS.to_dict() for GFS in GFS_model]
     return jsonify(GFS_dicts)
 

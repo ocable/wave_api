@@ -46,7 +46,7 @@ def gfsJob():
     global GFS_dicts
     date, cycle = UTC_datetime()
     print(f"date: {date} cycle: {cycle}")
-    bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t12z/gfswave.{portlandBuoyID}.bull')
+    bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
     GFS_model = fetch_GFS_model(bull_file)
     GFS_dicts = [GFS.to_dict() for GFS in GFS_model]
     print("GFS fetch complete")

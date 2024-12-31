@@ -1,5 +1,5 @@
 import time
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify
 from flask_cors import CORS
 import requests
 from rich import print
@@ -11,8 +11,6 @@ from flask_apscheduler import APScheduler
 
 from peak_detect import peakdet
 from tools import wave_energy
-from tools import UTC_datetime
-
 
 from spectral_data import get_spectral_data as fetch_spectral_data
 from spectral_data import swell_components as fetch_swell_components
@@ -34,20 +32,21 @@ app = Flask(__name__)
 app.config.from_object(Config())
 CORS(app)
 
-# Initialize scheduler deez nuts again
+# Initialize scheduler
 scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
 
-# Global variable to store
+# Global variable to store GFS model
 GFS_dicts = {}
 
+#Scheduler to fetch GFS model data
 @scheduler.task('interval', id='fetch_GFS_forecast', seconds=5, misfire_grace_time=900)
 def gfsJob():
     global GFS_dicts
     date, cycle = UTC_datetime()
     print(f"date: {date} cycle: {cycle}")
-    bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t12z/gfswave.{portlandBuoyID}.bull')
+    bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/12/wave/station/bulls.t12z/gfswave.{portlandBuoyID}.bull')
     GFS_model = fetch_GFS_model(bull_file)
     GFS_dicts = [GFS.to_dict() for GFS in GFS_model]
     print("GFS fetch complete")
@@ -64,23 +63,15 @@ portlandBuoyID = 44007
 def get_current_time():
     return {'time': time.time()}
 
-@app.route('/spectraldata', methods=["GET"])
+@app.route('/spectraldata')
 def get_spectral_data_route():
     # NDBC Raw Spectral Data
     raw_spectralData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.data_spec')
     # Spectral data
     seperation, densities, frequencies, periods = fetch_spectral_data(raw_spectralData)
+    return {'seperation': seperation, 'densities': densities, 'frequencies': frequencies, 'periods': periods}
 
-    response = make_response(jsonify({
-        'seperation': seperation,
-        'densities': densities,
-        'frequencies': frequencies,
-        'periods': periods
-    }))
-    response.headers['Cache-Control'] = 'no-store'
-    return response
-
-@app.route('/significant', methods=["GET"])
+@app.route('/significant')
 def get_significant_wave_data():
     # NDBC Raw Spectral Data
     raw_spectralData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.data_spec')
@@ -104,18 +95,9 @@ def get_significant_wave_data():
     sig_wave_height = (4 * np.sqrt(zero_moment)) * 3.280839895
     sig_wave_energy = wave_energy(sig_period, sig_wave_height_metric)
 
-    response = make_response(jsonify({
-        'sig_wave_height': sig_wave_height,
-        'period': sig_period,
-        'direction': primaryDirection,
-        'density': density,
-        'energy': sig_wave_energy
-    }))
-    response.headers['Cache-Control'] = 'no-store'
-    return response
+    return {'sig_wave_height': sig_wave_height, 'period': sig_period, 'direction': primaryDirection, 'density': density, 'energy': sig_wave_energy}
 
-
-@app.route('/swellcomponents', methods=["GET"])
+@app.route('/swellcomponents')
 def get_swell_components():
     # NDBC Raw Spectral Data
     raw_spectralData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.data_spec')
@@ -136,65 +118,43 @@ def get_swell_components():
     components = fetch_swell_components(frequencies, densities, directions, min_indexes, min_values, max_indexes, max_values)
 
     components_dicts = [component.to_dict() for component in components]
+    return jsonify(components_dicts)
 
-    response = make_response(jsonify(components_dicts))
-    response.headers['Cache-Control'] = 'no-store'
-    return response
-
-@app.route('/wind', methods=["GET"])
+@app.route('/wind')
 def get_wind_data_route():
     # Wind data
     wind_data = fetch_wind_data()
+
     wind_dicts = [wind.to_dict() for wind in wind_data]
+    return jsonify(wind_dicts)
 
-    response = make_response(jsonify(wind_dicts))
-    response.headers['Cache-Control'] = 'no-store'
-    return response
-
-@app.route('/weather', methods=["GET"])
+@app.route('/weather')
 def get_weather_data_route():
     # Weather.gov Data
     raw_weatherData = requests.get(f'https://api.weather.gov/gridpoints/GYX/76,54/forecast')
+
     # Weather live/forecast
     weather_data = fetch_weather_data(raw_weatherData)
+
+
     weather_dicts = [weather.to_dict() for weather in weather_data]
+    return jsonify(weather_dicts)
 
-    response = make_response(jsonify(weather_dicts))
-    response.headers['Cache-Control'] = 'no-store'
-    return response
-
-@app.route('/meteorological', methods=["GET"])
+@app.route('/meteorological')
 def get_meteorogical_data_route():
     # NDBC Raw Meteorological Buoy Data
     raw_meteorogicalData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.txt')
+
     # Meteorological buoy data
     wind_direction, wind_speed, gust, significant_wave_height, dominant_wave_period, average_wave_period, dominant_wave_direction, sea_level_pressure, air_temperature, sea_surface_temperature, dewpoint, visibility = fetch_meteorological_data(raw_meteorogicalData)
-    
-    response = make_response(jsonify({
-        'wind_direction': wind_direction,
-        'wind_speed': wind_speed,
-        'gust': gust,
-        'significant_wave_height': significant_wave_height,
-        'dominant_wave_period': dominant_wave_period,
-        'average_wave_period': average_wave_period,
-        'dominant_wave_direction': dominant_wave_direction,
-        'sea_level_pressure': sea_level_pressure,
-        'air_temperature': air_temperature,
-        'sea_surface_temperature': sea_surface_temperature,
-        'dewpoint': dewpoint,
-        'visibility': visibility
-    }))
-    response.headers['Cache-Control'] = 'no-store'
-    return response
 
-@app.route('/GFS', methods=["GET"])
+    return {'wind_direction': wind_direction, 'wind_speed': wind_speed, 'gust': gust, 'significant_wave_height': significant_wave_height, 'dominant_wave_period': dominant_wave_period, 'average_wave_period': average_wave_period, 'dominant_wave_direction': dominant_wave_direction, 'sea_level_pressure': sea_level_pressure, 'air_temperature': air_temperature, 'sea_surface_temperature': sea_surface_temperature, 'dewpoint': dewpoint, 'visibility': visibility}
+
+@app.route('/GFS')
 def get_GFS_model_route():
     global GFS_dicts
     return jsonify(GFS_dicts)
 
-    response = make_response(jsonify(GFS_dicts))
-    response.headers['Cache-Control'] = 'no-store'
-    return response
 
 if __name__ == "__main__":
     app.run() 

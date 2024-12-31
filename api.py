@@ -37,7 +37,7 @@ scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
 
-# Global variable to store GFS model
+# Global variable to store
 GFS_dicts = {}
 
 @scheduler.task('interval', id='fetch_GFS_forecast', seconds=5, misfire_grace_time=900)

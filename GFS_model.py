@@ -47,19 +47,6 @@ entries = []
 
 
 def parse_GFS_model(bull_file):
-    cycle = 00
-    current_date_utc = datetime.datetime.now(timezone('US/Eastern'))
-    # Format the date in YYYYMMDD format
-    time = int(current_date_utc.strftime("%H%M%S"))
-
-    if time < 93000:
-        cycle = 0
-    elif time > 93000 and time < 153100:
-        cycle = 6
-    elif time > 153100 and time < 213600:
-        cycle = 12
-    else:
-        cycle = 18
     
     if bull_file.status_code == 200:
         raw_data = bull_file.text.split('\n')
@@ -134,7 +121,7 @@ def parse_GFS_model(bull_file):
                 entry = GFS_forecast_hour(timestamp, day, hour, significant_wave_height, num_swell_components, comp1_height, comp1_period, comp1_dir, comp2_height, comp2_period, comp2_dir, comp3_height, comp3_period, comp3_dir)
 
                 entries.append(entry)
-                print(datetime.datetime.now())
+                # print(datetime.datetime.now())
 
 
             else:

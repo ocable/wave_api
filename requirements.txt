@@ -1,4 +1,5 @@
 annotated-types==0.7.0
+APScheduler==3.11.0
 blinker==1.8.2
 certifi==2024.8.30
 cffi==1.17.1
@@ -11,6 +12,7 @@ curl_cffi==0.7.2
 cycler==0.12.1
 docopt==0.6.2
 Flask==3.0.3
+Flask-APScheduler==1.13.1
 Flask-Cors==5.0.0
 fonttools==4.54.1
 gunicorn==23.0.0
@@ -38,5 +40,6 @@ rich==13.8.1
 six==1.16.0
 terminaltables==3.1.10
 typing_extensions==4.12.2
+tzlocal==5.2
 urllib3==2.2.3
 Werkzeug==3.0.4

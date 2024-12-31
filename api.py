@@ -6,6 +6,8 @@ from rich import print
 import numpy as np
 import datetime
 
+from flask_apscheduler import APScheduler
+
 
 from peak_detect import peakdet
 from tools import wave_energy
@@ -20,30 +22,41 @@ from meterological_data import get_meteorological_data as fetch_meteorological_d
 from GFS_model import parse_GFS_model as fetch_GFS_model
 from tools import UTC_datetime
 
-
+# set configuration values
+class Config:
+    SCHEDULER_API_ENABLED = True
+    JSON_SORT_KEYS = False
 
 
 app = Flask(__name__)
-app.config['JSON_SORT_KEYS'] = False
+app.config.from_object(Config())
 CORS(app)
+
+# Initialize scheduler
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
+
+GFS_dicts = {}
+
+@scheduler.task('interval', id='fetch_GFS_forecast', seconds=5, misfire_grace_time=900)
+def gfsJob():
+    global GFS_dicts
+    date, cycle = UTC_datetime()
+    print(f"date: {date} cycle: {cycle}")
+    bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/12/wave/station/bulls.t12z/gfswave.{portlandBuoyID}.bull')
+    GFS_model = fetch_GFS_model(bull_file)
+    GFS_dicts = [GFS.to_dict() for GFS in GFS_model]
+    print("GFS fetch complete")
+    # print(datetime.datetime.now())
+    return GFS_dicts
 
 
 # NBDC Buoy ID
 portlandBuoyID = 44007
 
-# Date and cycle
-date, cycle = UTC_datetime()
-
-
-
-
-
-
-
-
 
 # API ENDPOINTS -------->
-
 @app.route('/time')
 def get_current_time():
     return {'time': time.time()}
@@ -137,17 +150,10 @@ def get_meteorogical_data_route():
 
 @app.route('/GFS')
 def get_GFS_model_route():
-    # GFS Model Data
-    bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
-
-    # GFS Model
-    GFS_model = fetch_GFS_model(bull_file)
-
-    # GFS Model data to dictionary
-    GFS_dicts = [GFS.to_dict() for GFS in GFS_model]
+    global GFS_dicts
     return jsonify(GFS_dicts)
 
 
-
 if __name__ == "__main__":
-    app.run()
+    app.run() 
+

@@ -2,27 +2,14 @@ import requests
 import re
 import matplotlib.pyplot as plt
 import datetime
-<<<<<<< HEAD
-=======
-from pytz import timezone
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
 
 
 portlandBuoyID = 44007
 
 
-<<<<<<< HEAD
 class GFS_forecast_hour:
     def __init__(self, timestamp, day, hour, significant_wave_height, num_swell_components, comp1_height, comp1_period, comp1_dir, comp2_height, comp2_period, comp2_dir, comp3_height, comp3_period, comp3_dir):
         self.timestamp = datetime.datetime.now()
-=======
-
-
-
-class GFS_forecast_hour:
-    def __init__(self, cycle, day, hour, significant_wave_height, num_swell_components, comp1_height, comp1_period, comp1_dir, comp2_height, comp2_period, comp2_dir, comp3_height, comp3_period, comp3_dir):
-        self.cycle = cycle
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
         self.day = day
         self.hour = hour
         self.significant_wave_height = significant_wave_height
@@ -39,11 +26,7 @@ class GFS_forecast_hour:
 
     def to_dict(self):
         return {
-<<<<<<< HEAD
             "timestamp": self.timestamp,
-=======
-            "cycle": self.cycle,
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
             "day": self.day,
             "hour": self.hour,
             "significant_wave_height": self.significant_wave_height,
@@ -86,11 +69,7 @@ def parse_GFS_model(bull_file):
             first_line = re.findall(r'\d+\.\d+|\d+', raw_data[i])
 
             if len(first_line) == 4:
-<<<<<<< HEAD
                 timestamp = datetime.datetime.now()
-=======
-                cycle = cycle
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
                 day = first_line[0]
                 hour = first_line[1]
                 significant_wave_height = first_line[2]
@@ -105,11 +84,7 @@ def parse_GFS_model(bull_file):
                 comp3_period = []
                 comp3_dir = []
 
-<<<<<<< HEAD
                 entry = GFS_forecast_hour(timestamp, day, hour, significant_wave_height, num_swell_components, comp1_height, comp1_period, comp1_dir, comp2_height, comp2_period, comp2_dir, comp3_height, comp3_period, comp3_dir)
-=======
-                entry = GFS_forecast_hour(cycle, day, hour, significant_wave_height, num_swell_components, comp1_height, comp1_period, comp1_dir, comp2_height, comp2_period, comp2_dir, comp3_height, comp3_period, comp3_dir)
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
 
                 entries.append(entry)
                 # print(datetime.datetime.now())
@@ -117,12 +92,8 @@ def parse_GFS_model(bull_file):
 
 
             elif len(first_line) == 7:
-<<<<<<< HEAD
                  
                 timestamp = datetime.datetime.now()
-=======
-                cycle = cycle
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
                 day = first_line[0]
                 hour = first_line[1]
                 significant_wave_height = first_line[2]
@@ -137,23 +108,15 @@ def parse_GFS_model(bull_file):
                 comp3_period = []
                 comp3_dir = []
 
-<<<<<<< HEAD
                 entry = GFS_forecast_hour(timestamp, day, hour, significant_wave_height, num_swell_components, comp1_height, comp1_period, comp1_dir, comp2_height, comp2_period, comp2_dir, comp3_height, comp3_period, comp3_dir)
-=======
-                entry = GFS_forecast_hour(cycle, day, hour, significant_wave_height, num_swell_components, comp1_height, comp1_period, comp1_dir, comp2_height, comp2_period, comp2_dir, comp3_height, comp3_period, comp3_dir)
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
 
                 entries.append(entry)
                 # print(datetime.datetime.now())
 
             
             elif len(first_line) == 10:
-<<<<<<< HEAD
                  
                 timestamp = datetime.datetime.now()
-=======
-                cycle = cycle
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
                 day = first_line[0]
                 hour = first_line[1]
                 significant_wave_height = first_line[2]
@@ -168,22 +131,14 @@ def parse_GFS_model(bull_file):
                 comp3_period = []
                 comp3_dir = []
 
-<<<<<<< HEAD
                 entry = GFS_forecast_hour(timestamp, day, hour, significant_wave_height, num_swell_components, comp1_height, comp1_period, comp1_dir, comp2_height, comp2_period, comp2_dir, comp3_height, comp3_period, comp3_dir)
-=======
-                entry = GFS_forecast_hour(cycle, day, hour, significant_wave_height, num_swell_components, comp1_height, comp1_period, comp1_dir, comp2_height, comp2_period, comp2_dir, comp3_height, comp3_period, comp3_dir)
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
 
                 entries.append(entry)
                 print(datetime.datetime.now())
 
 
             else:
-<<<<<<< HEAD
                 timestamp = datetime.datetime.now()
-=======
-                cycle = cycle
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
                 day = first_line[0]
                 hour = first_line[1]
                 significant_wave_height = first_line[2]
@@ -198,11 +153,7 @@ def parse_GFS_model(bull_file):
                 comp3_period = first_line[11]
                 comp3_dir = first_line[12]
 
-<<<<<<< HEAD
                 entry = GFS_forecast_hour(timestamp, day, hour, significant_wave_height, num_swell_components, comp1_height, comp1_period, comp1_dir, comp2_height, comp2_period, comp2_dir, comp3_height, comp3_period, comp3_dir)
-=======
-                entry = GFS_forecast_hour(cycle, day, hour, significant_wave_height, num_swell_components, comp1_height, comp1_period, comp1_dir, comp2_height, comp2_period, comp2_dir, comp3_height, comp3_period, comp3_dir)
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
 
                 entries.append(entry)
                 # print(datetime.datetime.now())

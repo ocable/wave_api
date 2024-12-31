@@ -192,6 +192,9 @@ def get_GFS_model_route():
     global GFS_dicts
     return jsonify(GFS_dicts)
 
+    response = make_response(jsonify(GFS_dicts))
+    response.headers['Cache-Control'] = 'no-store'
+    return response
 
 if __name__ == "__main__":
     app.run() 

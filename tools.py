@@ -41,3 +41,9 @@ def UTC_datetime():
 
     return formatted_date_utc, cycle
 
+<<<<<<< HEAD
+=======
+print(UTC_datetime()) 
+
+
+>>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5

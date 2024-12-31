@@ -34,7 +34,7 @@ app = Flask(__name__)
 app.config.from_object(Config())
 CORS(app)
 
-# Initialize scheduler deez nuts
+# Initialize scheduler deez nuts again
 scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()

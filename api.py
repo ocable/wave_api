@@ -22,16 +22,12 @@ from weather_data import get_weather_data as fetch_weather_data
 from wind_data import main as fetch_wind_data
 from meterological_data import get_meteorological_data as fetch_meteorological_data
 from GFS_model import parse_GFS_model as fetch_GFS_model
-<<<<<<< HEAD
 from tools import UTC_datetime
 
 # set configuration values
 class Config:
     SCHEDULER_API_ENABLED = True
     JSON_SORT_KEYS = False
-=======
-
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
 
 
 app = Flask(__name__)
@@ -63,15 +59,8 @@ def gfsJob():
 portlandBuoyID = 44007
 
 
-<<<<<<< HEAD
 # API ENDPOINTS -------->
 @app.route('/time')
-=======
-
-# API ENDPOINTS -------->
-
-@app.route('/time', methods=["GET"])
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
 def get_current_time():
     return {'time': time.time()}
 
@@ -200,21 +189,8 @@ def get_meteorogical_data_route():
 
 @app.route('/GFS', methods=["GET"])
 def get_GFS_model_route():
-<<<<<<< HEAD
     global GFS_dicts
     return jsonify(GFS_dicts)
-=======
-    # Date and cycle
-    date, cycle = UTC_datetime()
-    print(cycle)
-    # GFS Model Data
-    bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
-    # GFS Model
-    GFS_model = fetch_GFS_model(bull_file)
-
-    # GFS Model data to dictionary
-    GFS_dicts = [GFS.to_dict() for GFS in GFS_model]
->>>>>>> de54b89338e15cfc59e3fca9b91577ee8889aeb5
 
     response = make_response(jsonify(GFS_dicts))
     response.headers['Cache-Control'] = 'no-store'

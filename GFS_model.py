@@ -7,9 +7,9 @@ import datetime
 portlandBuoyID = 44007
 
 
-entries = []
 
 def parse_GFS_model(bull_file):
+    entries = []
     
     if bull_file.status_code == 200:
         raw_data = bull_file.text.split('\n')

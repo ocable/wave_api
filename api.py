@@ -32,26 +32,24 @@ app = Flask(__name__)
 app.config.from_object(Config())
 CORS(app)
 
-# Initialize scheduler
-scheduler = APScheduler()
-scheduler.init_app(app)
-scheduler.start()
+# # Initialize scheduler
+# scheduler = APScheduler()
+# scheduler.init_app(app)
+# scheduler.start()
 
-# Global variable to store GFS model
-GFS_dicts = {}
+# # Global variable to store GFS model
+# GFS_model = []
 
-#Scheduler to fetch GFS model data
-@scheduler.task('interval', id='fetch_GFS_forecast', seconds=5, misfire_grace_time=900)
-def gfsJob():
-    global GFS_dicts
-    date, cycle = UTC_datetime()
-    print(f"date: {date} cycle: {cycle}")
-    bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
-    GFS_model = fetch_GFS_model(bull_file)
-    GFS_dicts = [GFS.to_dict() for GFS in GFS_model]
-    print("GFS fetch complete")
-    # print(datetime.datetime.now())
-    return GFS_dicts
+# #Scheduler to fetch GFS model data
+# @scheduler.task('interval', id='fetch_GFS_forecast', seconds=5, misfire_grace_time=900)
+# def gfsJob():
+#     date, cycle = UTC_datetime()
+#     print(f"date: {date} cycle: {cycle}")
+#     bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
+#     GFS_model = fetch_GFS_model(bull_file)
+#     print("GFS fetch complete")
+#     # print(datetime.datetime.now())
+#     return GFS_model
 
 
 # NBDC Buoy ID
@@ -150,11 +148,18 @@ def get_meteorogical_data_route():
 
     return {'wind_direction': wind_direction, 'wind_speed': wind_speed, 'gust': gust, 'significant_wave_height': significant_wave_height, 'dominant_wave_period': dominant_wave_period, 'average_wave_period': average_wave_period, 'dominant_wave_direction': dominant_wave_direction, 'sea_level_pressure': sea_level_pressure, 'air_temperature': air_temperature, 'sea_surface_temperature': sea_surface_temperature, 'dewpoint': dewpoint, 'visibility': visibility}
 
+
+
+
 @app.route('/GFS')
 def get_GFS_model_route():
-    global GFS_dicts
-    return jsonify(GFS_dicts)
-
+    # Date and cycle
+    date, cycle = UTC_datetime()
+    # GFS Model Data
+    bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
+    GFS_model = fetch_GFS_model(bull_file)
+    print("time: ", datetime.datetime.now())
+    return jsonify(GFS_model)
 
 if __name__ == "__main__":
     app.run() 

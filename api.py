@@ -47,7 +47,7 @@ portlandBuoyID = 44007
 # global GFS_model
 # GFS_model = fetch_GFS_model(bull_file
 
-GFS_model = []
+
 
 #Scheduler to fetch GFS model data
 @scheduler.task('interval', id='fetch_GFS_forecast', seconds=90, misfire_grace_time=900)

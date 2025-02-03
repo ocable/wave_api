@@ -50,7 +50,7 @@ portlandBuoyID = 44007
 
 
 #Scheduler to fetch GFS model data
-@scheduler.task('interval', id='fetch_GFS_forecast', hours=2, misfire_grace_time=900)
+@scheduler.task('interval', id='fetch_GFS_forecast', seconds=90, misfire_grace_time=900)
 def gfsJob():
     date, cycle = UTC_datetime()
     bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')

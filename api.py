@@ -45,7 +45,7 @@ portlandBuoyID = 44007
 # print(date, cycle)
 # bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
 # global GFS_model
-# GFS_model = fetch_GFS_model(bull_file)
+# GFS_model = fetch_GFS_model(bull_file
 
 
 

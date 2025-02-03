@@ -41,16 +41,16 @@ scheduler.start()
 portlandBuoyID = 44007
 
 # Global variable to store GFS model
-date, cycle = UTC_datetime()
-print(date, cycle)
-bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
-global GFS_model
-GFS_model = fetch_GFS_model(bull_file)
+# date, cycle = UTC_datetime()
+# print(date, cycle)
+# bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
+# global GFS_model
+# GFS_model = fetch_GFS_model(bull_file)
 
 
 
 #Scheduler to fetch GFS model data
-@scheduler.task('interval', id='fetch_GFS_forecast', hours=4, misfire_grace_time=900)
+@scheduler.task('interval', id='fetch_GFS_forecast', hours=2, misfire_grace_time=900)
 def gfsJob():
     date, cycle = UTC_datetime()
     bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
@@ -59,7 +59,7 @@ def gfsJob():
     print("GFS fetch complete")
     # print(datetime.datetime.now())
 
-
+ 
 
 # API ENDPOINTS -------->
 @app.route('/time')

@@ -59,7 +59,7 @@ def get_spectral_data (raw_spectralData):
 
 
 # Direction data
-def freqDirection (raw_directionalData, frequencies):
+def freqDirection (raw_directionalData):
     if raw_directionalData.status_code == 200:
         #splits raw_spectralData by line
         raw_data = raw_directionalData.text.split('\n')
@@ -76,7 +76,7 @@ def freqDirection (raw_directionalData, frequencies):
 
 
 
-    return directions
+    return directions, freqs
 
 
 # Outputs wave summary data

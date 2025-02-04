@@ -86,7 +86,7 @@ def get_significant_wave_data():
     seperation, densities, frequencies, periods = fetch_spectral_data(raw_spectralData)
 
     # Directional data
-    directions = fetch_direction_data(raw_directionalData, frequencies)
+    directions, freqs = fetch_direction_data(raw_directionalData)
 
     # Wave summary
     wave_height, sig_period, zero_moment, max_energy_index, primaryDirection, density = fetch_wave_summary(frequencies, densities, directions)
@@ -115,13 +115,23 @@ def get_swell_components():
     min_indexes, min_values, max_indexes, max_values = peakdet(densities, 0.05)
 
     # Directional data
-    directions = fetch_direction_data(raw_directionalData, frequencies)
+    directions, freqs = fetch_direction_data(raw_directionalData)
 
     # Swell components
     components = fetch_swell_components(frequencies, densities, directions, min_indexes, min_values, max_indexes, max_values)
 
     components_dicts = [component.to_dict() for component in components]
     return jsonify(components_dicts)
+
+@app.route('/directions')
+def get_direction_data():
+    # NDBC Raw Directional Data
+    raw_directionalData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.swdir')
+    
+    # Directional data
+    directions, freqs = fetch_direction_data(raw_directionalData)
+
+    return jsonify(directions, freqs)
 
 @app.route('/wind')
 def get_wind_data_route():

@@ -127,7 +127,7 @@ def get_direction_data():
     # NDBC Raw Directional Data
     raw_directionalData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.swdir')
     
-    # Directional data
+    # Directional data der
     directions, freqs = fetch_direction_data(raw_directionalData)
 
     return jsonify(directions, freqs)

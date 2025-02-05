@@ -111,7 +111,7 @@ def get_swell_components():
     seperation, densities, frequencies, periods = fetch_spectral_data(raw_spectralData)
 
     # Results from peak detection
-    min_indexes, min_values, max_indexes, max_values = peakdet(densities, 0.05)
+    min_indexes, min_values, max_indexes, max_values = peakdet(densities, 0.01)
 
     # Directional data
     directions, freqs = fetch_direction_data(raw_directionalData)

@@ -38,7 +38,7 @@ def get_spectral_data (raw_spectralData):
         # Exctracts first number with decimal point (seperation freq)
         seperation = re.findall(r'\d+\.\d+', raw_data[1])[0]
 
-        raw_densities = re.findall(r"\b\d+\.\d+\b(?=\s*\(|$)", raw_data[1])[1:]
+        raw_densities = re.findall(r"(?:\b|^)\d+\.\d+\b(?=\s*\(|$)", raw_data[1])[0:]
 
         frequencies = re.findall(r'\(([^)]+)\)', raw_data[1])
 

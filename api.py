@@ -71,6 +71,7 @@ def get_spectral_data_route():
     raw_spectralData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{portlandBuoyID}.data_spec')
     # Spectral data
     seperation, densities, frequencies, periods = fetch_spectral_data(raw_spectralData)
+    print(densities)
     return {'seperation': seperation, 'densities': densities, 'frequencies': frequencies, 'periods': periods}
 
 @app.route('/significant')

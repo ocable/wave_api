@@ -22,42 +22,43 @@ raw_directionalData = requests.get(f'https://www.ndbc.noaa.gov/data/realtime2/{p
 # Directional data der
 directions, freqs = fetch_direction_data(raw_directionalData)
 
-efth = np.array(densities/directions)
+efth = np.array(densities)
 freq = np.array(frequencies) 
 dir = np.array([0])
 
 
 
-# # print(f"Length of efth: {len(efth)}")
-# # print(f"Length of freq: {len(freq)}")
-# # print(f"Length of dir: {len(dir)}")
+efth = np.array(densities)
+freq = np.array(frequencies)
+dir = np.array(directions)
 
+print(f"shape of efth: {efth.shape}")
+print(f"shape of freq: {freq.shape}")
+print(f"shape of dir: {dir.shape}")
+
+# Ensure efth is correctly shaped
 efth_expanded = np.tile(efth[:, np.newaxis], (1, len(dir))) # Correct way to tile
 
-efth_expanded /= len(dir)
+print(f"shape of efth_expanded: {efth_expanded.shape}") 
+print(efth_expanded)
+
+# Convert from m^2/Hz to m^2/Hz/degree
+# efth_expanded /= len(dir)
 
 da = xr.DataArray(
-    data=np.expand_dims(efth, 1),
+    data=efth_expanded,
     dims=["freq", "dir"],
     coords=dict(freq=freq, dir=dir),
     name="efth",
 )
-print(da)
 
-
-da.spec.hs()
 
 dset = da.to_dataset()
 
-dset.spec.hs()
 
-dset.efth.spec
+ds = dset.isel()
 
-print(dset.spec)
-
-ds = dset.isel(freq=slice(0, 46), dir=slice(0, 46))
-
-ds.spec.plot(as_period=True, normalised=False, cmap="Spectral_r");
+dset.spec.plot(as_period=True, normalised=True, cmap="Spectral_r");
 #ds.spec.plot(kind="contour", colors="#af1607", linewidths=0.5);
 
 plt.show()

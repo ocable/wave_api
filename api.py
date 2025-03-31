@@ -40,6 +40,9 @@ scheduler.start()
 # NBDC Buoy ID
 portlandBuoyID = 44007
 
+# CO-OPS Station ID
+coopStationID = 8418150
+
 # Global variable to store GFS model
 # date, cycle = UTC_datetime()
 # print(date, cycle)
@@ -172,6 +175,12 @@ def get_GFS_model_route():
     bull_file = requests.get(f'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{date}/{cycle}/wave/station/bulls.t{cycle}z/gfswave.{portlandBuoyID}.bull')
     GFS_model = fetch_GFS_model(bull_file)
     return jsonify(GFS_model)
+
+@app.route('/tide/<start_date>/<end_date>')
+def get_tide_data_route(start_date, end_date):
+    # CO-OPS Tide Data
+    raw_tideData = requests.get(f'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date={start_date}&end_date={end_date}&station={coopStationID}&product=predictions&datum=MLLW&time_zone=lst_ldt&interval=hilo&units=english&application=DataAPI_Sample&format=json')
+    return jsonify(raw_tideData.json())
 
 if __name__ == "__main__":
     app.run() 

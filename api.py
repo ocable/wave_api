@@ -178,6 +178,7 @@ def get_GFS_model_route():
 
 @app.route('/tide/<start_date>/<end_date>')
 def get_tide_data_route(start_date, end_date):
+    # CO-OPS Tide Data
     raw_tideData = requests.get(f'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date={start_date}&end_date={end_date}&station={coopStationID}&product=predictions&datum=MLLW&time_zone=lst_ldt&interval=hilo&units=english&application=DataAPI_Sample&format=json')
     return jsonify(raw_tideData.json())
 

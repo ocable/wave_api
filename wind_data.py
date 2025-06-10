@@ -32,7 +32,8 @@ def new_session():
 
 def getWindData(session: requests.Session, spotId: str):
     url = f"https://services.surfline.com/kbyg/spots/forecasts/wind?spotId={spotId}&days=5&intervalHours=1&corrected=false&cacheEnabled=true&units%5BwindSpeed%5D=KTS"
-    resp = session.get(url)
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'}
+    resp = session.get(url, headers = headers)
     resp.raise_for_status()
     wind_data_list = resp.json()["data"]["wind"]
     data = [WindData(**item) for item in wind_data_list]
